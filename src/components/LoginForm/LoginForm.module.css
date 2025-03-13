@@ -1,0 +1,129 @@
+.mainContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url('../../assets/loginBackground.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.wrapper {
+    width: 420px;
+    min-height: 80vh;
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(30px);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    color: #FFF;
+    border-radius: 10px;
+    padding: 30px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wrapper h1 {
+    font-size: 38px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.wrapper .inputBox {
+    position: relative;
+    width: 100%;
+    margin: 30px 0;
+}
+
+.inputBox input {
+    width: 100%;
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    outline: none;
+    color: #FFF;
+    border-radius: 40px;
+    padding: 20px 45px 20px 20px;
+    font-size: 16px;
+}
+
+.inputBox input::placeholder {
+    color: #e6e6e6;
+}
+
+.inputBox .icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #FFF;
+}
+
+.loginButton {
+    width: 100%;
+    height: 45px;
+    background-color: #FFF;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.loginButton:hover {
+    background-color: #191238;
+    color: #FFF;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+    .mainContainer {
+        padding: 15px;
+        background-position: center;
+    }
+
+    .wrapper {
+        width: 100%;
+        min-height: auto;
+        padding: 20px;
+    }
+
+    .wrapper h1 {
+        font-size: 28px;
+        margin-bottom: 15px;
+    }
+
+    .inputBox input {
+        padding: 15px 40px 15px 15px;
+        font-size: 14px;
+    }
+
+    .inputBox .icon {
+        right: 15px;
+        font-size: 16px;
+    }
+
+    .loginButton {
+        height: 40px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 320px) {
+    .wrapper {
+        padding: 15px;
+    }
+
+    .wrapper h1 {
+        font-size: 24px;
+    }
+
+    .inputBox {
+        margin: 20px 0;
+    }
+}
