@@ -1,0 +1,48 @@
+import { useState, useEffect } from "react";
+import styles from "./CotasForm.module.css";
+
+const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }) => {
+  const [cota, setCota] = useState({ nome: "", valor: "" });
+
+  useEffect(() => {
+    if (editando) {
+      setCota(editando);
+    }
+  }, [editando]);
+
+  const handleChange = (e) => {
+    setCota({ ...cota, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (editando) {
+      editarCota(cota);
+    } else {
+      adicionarCota(cota);
+    }
+    setCota({ nome: "", valor: "" });
+  };
+
+  return (
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalContent}>
+        <h2>{editando ? "Editar Cota" : "Adicionar Cota"}</h2>
+        <form onSubmit={handleSubmit}>
+          <label>Nome:</label>
+          <input type="text" name="nome" value={cota.nome} onChange={handleChange} required />
+
+          <label>Valor:</label>
+          <input type="number" name="valor" value={cota.valor} onChange={handleChange} required />
+
+          <div className={styles.modalActions}>
+            <button type="submit">{editando ? "Salvar" : "Adicionar"}</button>
+            <button type="button" onClick={fecharModal}>Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default CotasForm;
