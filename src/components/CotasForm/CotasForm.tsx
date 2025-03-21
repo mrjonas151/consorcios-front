@@ -1,27 +1,65 @@
 import { useState, useEffect } from "react";
 import styles from "./CotasForm.module.css";
+import { Cota, Grupo } from "../../types/ConsorcioTypes";
 
-const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }) => {
-  const [cota, setCota] = useState({ nome: "", valor: "" });
+interface CotasFormProps {
+  adicionarCota: (cota: Cota) => void;
+  editarCota: (cota: Cota) => void;
+  editando: Cota | null;
+  fecharModal: () => void;
+}
 
+const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }: CotasFormProps) => {
+  const [cota, setCota] = useState<Omit<Cota, 'grupo'> & { grupo: Grupo | null }>({ 
+    id: 0, 
+    nome: "", 
+    valor: 0,
+    numeroCota: "",
+    status: "",
+    grupoId: 0,
+    grupo: null
+  });
   useEffect(() => {
     if (editando) {
       setCota(editando);
     }
   }, [editando]);
 
-  const handleChange = (e) => {
-    setCota({ ...cota, [e.target.name]: e.target.value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCota(prev => ({
+      ...prev,
+      [name]: name === 'valor' ? Number(value) : value
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editando) {
-      editarCota(cota);
+      if (cota.grupo) {
+        editarCota({...cota, grupo: cota.grupo});
+      } else {
+        console.error("Grupo is required");
+        return;
+      }
     } else {
-      adicionarCota(cota);
+      if (cota.grupo) {
+        adicionarCota({...cota, grupo: cota.grupo});
+      } else {
+        console.error("Grupo is required");
+        return;
+      }
     }
-    setCota({ nome: "", valor: "" });
+    setCota({ 
+      id: 0, 
+      nome: "", 
+      valor: 0,
+      numeroCota: "",
+      status: "",
+      grupoId: 0,
+      grupo: null
+    });
+    fecharModal();
   };
 
   return (
