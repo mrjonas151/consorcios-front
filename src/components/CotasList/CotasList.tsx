@@ -1,5 +1,6 @@
 import styles from "./CotasList.module.css";
 import { Cota } from "../../types/ConsorcioTypes";
+import { FaSearch } from "react-icons/fa";
 
 interface CotasListProps {
   cotas: Cota[];
@@ -17,7 +18,15 @@ const CotasList = ({ cotas, setEditando, deletarCota }: CotasListProps) => {
 
   return (
     <div className={styles.listaCotas}>
-      <h2>Lista de Cotas</h2>
+      <div className={styles.listaCotasHeader}>
+        <h2>Lista de Cotas</h2>
+        <div className={styles.inputGroup}>
+          <input />
+          <FaSearch className={styles.icon} color="gray" size={22}/>
+        </div>
+        
+      </div>
+      
       
       {cotas.length === 0 ? (
         <p className={styles.emptyMessage}>Nenhuma cota encontrada.</p>

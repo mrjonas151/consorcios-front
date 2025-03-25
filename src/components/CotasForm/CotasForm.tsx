@@ -5,19 +5,19 @@ import { Cota, Grupo } from "../../types/ConsorcioTypes";
 interface CotasFormProps {
   adicionarCota: (cota: Cota) => void;
   editarCota: (cota: Cota) => void;
-  editando: Cota | null;
+  editando: Cota;
   fecharModal: () => void;
 }
 
 const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }: CotasFormProps) => {
-  const [cota, setCota] = useState<Omit<Cota, 'grupo'> & { grupo: Grupo | null }>({ 
+  const [cota, setCota] = useState<Omit<Cota, 'grupo'> & { grupo: Grupo }>({ 
     id: 0, 
     nome: "", 
     valor: 0,
     numeroCota: "",
     status: "",
     grupoId: 0,
-    grupo: null
+    grupo: {id: 0, nome: "", administradoraId: 0}
   });
   useEffect(() => {
     if (editando) {
@@ -57,7 +57,7 @@ const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }: CotasFo
       numeroCota: "",
       status: "",
       grupoId: 0,
-      grupo: null
+      grupo: {id: 0, nome: "", administradoraId: 0}
     });
     fecharModal();
   };

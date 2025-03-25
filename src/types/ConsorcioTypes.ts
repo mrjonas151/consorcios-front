@@ -29,8 +29,8 @@ export interface Cota {
     status: string;
     grupoId: number;
     grupo: Grupo;
-    clienteId?: number | null;
-    cliente?: Cliente | null;
+    clienteId?: number;
+    cliente?: Cliente;
 }
 
 export interface LoginModel {
@@ -43,7 +43,7 @@ export interface CotaInput {
     valor: number;
     status: string;
     grupoId: number;
-    clienteId?: number | null;
+    clienteId?: number;
 }
 
 export interface GrupoInput {

@@ -6,19 +6,19 @@ interface User {
 }
 
 interface AuthState {
-    user: User | null;
-    token: string | null;
+    user: User;
+    token: string;
     isAuthenticated: boolean;
     loading: boolean;
-    error: string | null;
+    error: string;
 }
 
 const initialState: AuthState = {
-    user: null,
-    token: null,
+    user: { username: "" },
+    token: "",
     isAuthenticated: false,
     loading: false,
-    error: null,
+    error: "",
 };
 
 const authSlice = createSlice({
@@ -27,7 +27,7 @@ const authSlice = createSlice({
     reducers: {
         loginStart: (state) => {
             state.loading = true;
-            state.error = null;
+            state.error = "";
         },
         loginSuccess: (
             state,
@@ -43,8 +43,8 @@ const authSlice = createSlice({
             state.error = action.payload;
         },
         logout: (state) => {
-            state.user = null;
-            state.token = null;
+            state.user = { username: "" };
+            state.token = "";
             state.isAuthenticated = false;
         },
     },

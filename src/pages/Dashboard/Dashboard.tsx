@@ -3,6 +3,8 @@ import CotasList from "../../components/CotasList/CotasList";
 import CotasForm from "../../components/CotasForm/CotasForm";
 import styles from "./Dashboard.module.css";
 import { Cota } from "../../types/ConsorcioTypes";
+import { IoMdExit } from "react-icons/io";
+import starLogo from "../../assets/star_image.png";
 
 const Dashboard = () => {
   const [cotas, setCotas] = useState<Cota[]>([
@@ -66,6 +68,26 @@ const Dashboard = () => {
         email: "cliente3@exemplo.com"
       }
     },
+    {
+      id: 4,
+      nome: "Cota 4",
+      numeroCota: "004",
+      valor: 2500,
+      status: "CONTEMPLADA",
+      grupoId: 1,
+      grupo: { 
+        id: 1, 
+        nome: "Grupo 1", 
+        administradoraId: 1 
+      },
+      clienteId: 4,
+      cliente: { 
+        id: 4, 
+        nome: "Cliente 4", 
+        cpf: "555.666.777-88",
+        email: "teste@gmail.com"
+      },
+    },
   ]);
 
   const [editando, setEditando] = useState<Cota | null>(null);
@@ -88,16 +110,24 @@ const Dashboard = () => {
 
   return (
     <div className={styles.dashboard}>
-      <h1>Dashboard de Cotas</h1>
-      <button 
-        className={styles.addButton}
-        onClick={() => {
-          setEditando(null);
-          setModalAberto(true);
-        }}
-      >
-        Adicionar Cota
-      </button>
+    <div className={styles.header}>
+      <img src={starLogo} alt="Logo" />
+      <div className={styles.headerContent}>
+        <h1>Dashboard de Cotas</h1>
+        <button 
+          className={styles.addButton}
+          onClick={() => {
+            setEditando(null);
+            setModalAberto(true);
+          }}
+        >
+          Adicionar Cota
+        </button>
+      </div>
+      <div className={styles.icon}>
+        <IoMdExit color="red" size={30} />
+      </div>
+    </div>
       
       {modalAberto && (
         <CotasForm 
