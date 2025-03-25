@@ -1,0 +1,157 @@
+.listaCotas {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+}
+
+.listaCotasHeader{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.listaCotasHeader input{
+    padding: 10px;
+    padding-right: 40px;
+    border: 1px solid #7a7a7a;
+    border-radius: 4px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.inputGroup{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.icon{
+    position: relative;
+    right: 30px;
+    bottom: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.icon:hover{
+    transform: scale(1.3);
+}
+
+.listaCotas h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.emptyMessage {
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+    margin: 30px 0;
+}
+
+.listaCotas ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cotaItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.cotaItem:hover {
+    background-color: rgb(252, 253, 171);
+}
+
+.cotaInfo {
+    flex: 1;
+}
+
+.cotaInfo h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.cotaDetails {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.cotaDetails p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.cotaActions {
+    display: flex;
+    gap: 10px;
+}
+
+.editButton,
+.deleteButton {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.editButton {
+    background-color: #4a90e2;
+    color: white;
+}
+
+.editButton:hover {
+    background-color: #3a7bc8;
+}
+
+.deleteButton {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.deleteButton:hover {
+    background-color: #c0392b;
+}
+
+.disponivel {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.reservada {
+    color: #f39c12;
+    font-weight: bold;
+}
+
+.vendida {
+    color: #2980b9;
+    font-weight: bold;
+}
+
+.contemplada {
+    color: #8e44ad;
+    font-weight: bold;
+}
+
+.cancelada {
+    color: #e74c3c;
+    font-weight: bold;
+}
