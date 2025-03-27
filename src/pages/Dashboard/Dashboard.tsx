@@ -1,6 +1,8 @@
 import { useState } from "react";
 import CotasList from "../../components/CotasList/CotasList";
 import CotasForm from "../../components/CotasForm/CotasForm";
+import CotaDetails from "../../components/CotasDetails/CotaDetails";
+import ConfirmationModal from "../../components/ConfirmationModal/ConfirmationModal";
 import styles from "./Dashboard.module.css";
 import { Cota } from "../../types/ConsorcioTypes";
 import { IoMdExit } from "react-icons/io";
@@ -90,8 +92,22 @@ const Dashboard = () => {
     },
   ]);
 
-  const [editando, setEditando] = useState<Cota | null>(null);
+  const cotaVazia: Cota = {
+  id: 0,
+  nome: "",
+  numeroCota: "",
+  valor: 0,
+  status: "",
+  grupoId: 0,
+  grupo: { id: 0, nome: "", administradoraId: 0 }
+};
+
   const [modalAberto, setModalAberto] = useState(false);
+  const [modalDetalhesAberto, setModalDetalhesAberto] = useState(false);
+  const [modalConfirmacaoAberto, setModalConfirmacaoAberto] = useState(false);
+  const [cotaParaDeletar, setCotaParaDeletar] = useState<Cota>(cotaVazia);
+  const [editando, setEditando] = useState<Cota>(cotaVazia);
+  const [visualizando, setVisualizando] = useState<Cota>(cotaVazia);
 
   const adicionarCota = (novaCota: Cota) => {
     setCotas([...cotas, { ...novaCota, id: Date.now() }]);
@@ -100,12 +116,26 @@ const Dashboard = () => {
 
   const editarCota = (cotaEditada: Cota) => {
     setCotas(cotas.map((cota) => (cota.id === cotaEditada.id ? cotaEditada : cota)));
-    setEditando(null);
+    setEditando(cotaVazia);
     setModalAberto(false);
   };
 
-  const deletarCota = (id: number) => {
-    setCotas(cotas.filter((cota) => cota.id !== id));
+  const confirmarDeletarCota = (cota: Cota) => {
+    setCotaParaDeletar(cota);
+    setModalConfirmacaoAberto(true);
+  };
+
+  const deletarCota = () => {
+    if (cotaParaDeletar) {
+      setCotas(cotas.filter((cota) => cota.id !== cotaParaDeletar.id));
+      setModalConfirmacaoAberto(false);
+      setCotaParaDeletar(cotaVazia);
+    }
+  };
+
+  const verDetalhesCota = (cota: Cota) => {
+    setVisualizando(cota);
+    setModalDetalhesAberto(true);
   };
 
   return (
@@ -117,7 +147,7 @@ const Dashboard = () => {
         <button 
           className={styles.addButton}
           onClick={() => {
-            setEditando(null);
+            setEditando(cotaVazia);
             setModalAberto(true);
           }}
         >
@@ -137,6 +167,25 @@ const Dashboard = () => {
           fecharModal={() => setModalAberto(false)}
         />
       )}
+
+      {modalDetalhesAberto && visualizando && (
+        <CotaDetails
+          cota={visualizando}
+          fecharModal={() => setModalDetalhesAberto(false)}
+        />
+      )}
+
+      {modalConfirmacaoAberto && cotaParaDeletar && (
+        <ConfirmationModal
+          title="Confirmar exclusão"
+          message={`Tem certeza que deseja excluir a cota ${cotaParaDeletar.nome || cotaParaDeletar.numeroCota}?`}
+          onConfirm={deletarCota}
+          onCancel={() => {
+            setModalConfirmacaoAberto(false);
+            setCotaParaDeletar(cotaVazia);
+          }}
+        />
+      )}
       
       <CotasList 
         cotas={cotas} 
@@ -144,7 +193,8 @@ const Dashboard = () => {
           setEditando(cota);
           setModalAberto(true);
         }} 
-        deletarCota={deletarCota} 
+        deletarCota={confirmarDeletarCota} 
+        verDetalhesCota={verDetalhesCota}
       />
     </div>
   );
