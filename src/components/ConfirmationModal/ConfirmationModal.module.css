@@ -1,0 +1,91 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background-color: rgb(252, 253, 171);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 400px;
+    max-width: 90%;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modalHeader {
+    padding: 15px 20px;
+    border-bottom: 1px solid #bdbdbd;
+}
+
+.modalHeader h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.modalBody {
+    padding: 20px;
+}
+
+.modalBody p {
+    margin: 0;
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.modalFooter {
+    padding: 15px 20px;
+    border-top: 1px solid #bdbdbd;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cancelButton,
+.confirmButton {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.cancelButton {
+    background-color: #c2c2c2;
+    color: #272727;
+}
+
+.cancelButton:hover {
+    background-color: #858585;
+}
+
+.confirmButton {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.confirmButton:hover {
+    background-color: #c0392b;
+}
