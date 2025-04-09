@@ -1,9 +1,9 @@
 import { ToastContainer } from "react-toastify";
-import('./bootstrap');
 import { toastConfig } from "./utils/toastConfig";
 import Dashboard from "./pages/Dashboard/Dashboard";
 
 function App() {
+
   return (
     <>
       <Dashboard />
