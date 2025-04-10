@@ -1,10 +1,15 @@
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const path = require("path");
+const deps = require("./package.json").dependencies;
 
 module.exports = {
-  entry: "./src/main.tsx",
+  entry: "./src/index",
   mode: "development",
   devServer: {
+    static: {
+      directory: path.join(__dirname, "dist"),
+    },
     port: 3000,
     historyApiFallback: true,
   },
@@ -12,19 +17,47 @@ module.exports = {
     publicPath: "auto",
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: [".ts", ".tsx", ".js", ".json"],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        loader: "babel-loader",
+        exclude: /node_modules/,
+        options: {
+          presets: ["@babel/preset-react", "@babel/preset-typescript"],
+        },
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: "cotasFrontend",
+      name: "cotasMicrofrontend",
       filename: "remoteEntry.js",
       exposes: {
-        "./CotasApp": "./src/App",
+        "./Dashboard": "./src/pages/Dashboard/Dashboard.tsx",
+        "./CotasList": "./src/components/CotasList/CotasList.tsx",
+        "./CotasForm": "./src/components/CotasForm/CotasForm.tsx",
       },
       shared: {
-        react: { singleton: true, requiredVersion: "^18.0.0" },
-        "react-dom": { singleton: true, requiredVersion: "^18.0.0" },
+        ...deps,
+        react: {
+          singleton: true,
+          requiredVersion: deps.react,
+        },
+        "react-dom": {
+          singleton: true,
+          requiredVersion: deps["react-dom"],
+        },
       },
+    }),
+    new HtmlWebpackPlugin({
+      template: "./public/index.html",
     }),
   ],
 };
