@@ -49,4 +49,4 @@ export type RootState = {
     };
 };
 
-export type AppDispatch = ReturnType<typeof initializeStore>["dispatch"];
+export type AppDispatch = ReturnType<typeof configureStore>["dispatch"];

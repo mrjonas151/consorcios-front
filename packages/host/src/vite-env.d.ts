@@ -5,6 +5,26 @@ declare module "shared/store" {
     export const store: Store;
 }
 
+declare module "shared/cotasSlice" {
+    import { Reducer } from "redux";
+
+    export interface CotasState {
+        items: any[];
+        selectedCota: any | null;
+        status: "idle" | "loading" | "succeeded" | "failed";
+        error: string | null;
+    }
+
+    export function selectCota(id: string | null): any;
+    export function addCotaLocal(cota: any): any;
+    export function updateCotaLocal(cota: any): any;
+    export function removeCotaLocal(id: string): any;
+    export function fetchCotas(): any;
+
+    const cotasReducer: Reducer<CotasState>;
+    export default cotasReducer;
+}
+
 declare module "shared/authSlice" {
     import { PayloadAction } from "@reduxjs/toolkit";
 

@@ -5,7 +5,6 @@ import ConfirmationModal from "../../components/ConfirmationModal/ConfirmationMo
 import styles from "./Dashboard.module.css";
 import { Cota } from "shared/types";
 import { IoMdExit } from "react-icons/io";
-import starLogo from "../../assets/star_image.png";
 import { useDispatch } from 'react-redux'; 
 import { logout } from 'shared/authSlice'; 
 import CotasList from "../../components/CotasList/CotasList";
@@ -13,6 +12,8 @@ import CotasList from "../../components/CotasList/CotasList";
 const Dashboard = () => {
 
   const dispatch = useDispatch();
+
+  const starLogo = "https://firebasestorage.googleapis.com/v0/b/travel-app-d9bdb.appspot.com/o/star_image.png?alt=media&token=0cf0051f-bf47-4d15-b5e2-70677ab94474";
 
   const [cotas, setCotas] = useState<Cota[]>([
     {
@@ -150,7 +151,7 @@ const Dashboard = () => {
   return (
     <div className={styles.dashboard}>
       <div className={styles.header}>
-        <img src={starLogo} alt="Logo" />
+        <img src={starLogo} alt="Star Logo" className={styles.logo} />
         <div className={styles.headerContent}>
           <h1>Dashboard de Cotas</h1>
           <button 

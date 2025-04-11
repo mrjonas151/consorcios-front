@@ -29,7 +29,6 @@ export default defineConfig({
         minify: false,
         cssCodeSplit: false,
         outDir: "dist",
-        assetsDir: "assets",
     },
     server: {
         port: 5001,
@@ -37,5 +36,16 @@ export default defineConfig({
         headers: {
             "Access-Control-Allow-Origin": "*",
         },
+        strictPort: true,
+        hmr: {
+            port: 5001,
+        },
+        fs: {
+            allow: [".."],
+        },
+    },
+    preview: {
+        port: 5001,
+        strictPort: true,
     },
 });

@@ -10,10 +10,6 @@ export default defineConfig({
             filename: "remoteEntry.js",
             exposes: {
                 "./Dashboard": "./src/pages/Dashboard/Dashboard.tsx",
-                "./CotasList": "./src/components/CotasList/CotasList.tsx",
-                "./CotasForm": "./src/components/CotasForm/CotasForm.tsx",
-                "./CotasDetails":
-                    "./src/components/CotasDetails/CotaDetails.tsx",
             },
             remotes: {
                 shared: "http://localhost:5001/assets/remoteEntry.js",
@@ -21,7 +17,6 @@ export default defineConfig({
             shared: [
                 "react",
                 "react-dom",
-                "react-router-dom",
                 "@reduxjs/toolkit",
                 "react-redux",
                 "react-toastify",
@@ -36,5 +31,17 @@ export default defineConfig({
     },
     server: {
         port: 5003,
+        cors: true,
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+        },
+        strictPort: true,
+    },
+    preview: {
+        port: 5003,
+        strictPort: true,
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+        },
     },
 });

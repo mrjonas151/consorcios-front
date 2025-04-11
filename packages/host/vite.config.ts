@@ -8,21 +8,9 @@ export default defineConfig({
         federation({
             name: "host",
             remotes: {
-                shared: {
-                    external: "http://localhost:5001/assets/remoteEntry.js",
-                    format: "esm",
-                    from: "vite",
-                },
-                auth: {
-                    external: "http://localhost:5002/assets/remoteEntry.js",
-                    format: "esm",
-                    from: "vite",
-                },
-                dashboard: {
-                    external: "http://localhost:5003/assets/remoteEntry.js",
-                    format: "esm",
-                    from: "vite",
-                },
+                shared: "http://localhost:5001/assets/remoteEntry.js",
+                auth: "http://localhost:5002/assets/remoteEntry.js",
+                dashboard: "http://localhost:5003/assets/remoteEntry.js",
             },
             shared: [
                 "react",
