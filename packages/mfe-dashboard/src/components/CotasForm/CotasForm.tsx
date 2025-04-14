@@ -42,9 +42,9 @@ const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }: CotasFo
     { id: 4, nome: "Cliente 4", cpf: "555.666.777-88", email: "teste@gmail.com" }
   ];
 
-  const [grupos, setGrupos] = useState<Grupo[]>(gruposIniciais);
+  const [grupos] = useState<Grupo[]>(gruposIniciais);
   
-  const [clientes, setClientes] = useState<Cliente[]>(clientesIniciais);
+  const [clientes] = useState<Cliente[]>(clientesIniciais);
 
   useEffect(() => {
     if (editando) {

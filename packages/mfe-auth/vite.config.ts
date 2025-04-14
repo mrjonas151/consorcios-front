@@ -13,11 +13,7 @@ export default defineConfig({
                 "./SignIn": "./src/pages/SignIn/SignIn.tsx",
             },
             remotes: {
-                shared: {
-                    external: "http://localhost:5001/assets/remoteEntry.js",
-                    format: "esm",
-                    from: "vite",
-                },
+                shared: "http://localhost:5001/assets/remoteEntry.js",
             },
             shared: [
                 "react",
@@ -37,6 +33,13 @@ export default defineConfig({
     server: {
         port: 5002,
         cors: true,
+        strictPort: true,
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+        },
+    },
+    preview: {
+        port: 5002,
         strictPort: true,
         headers: {
             "Access-Control-Allow-Origin": "*",

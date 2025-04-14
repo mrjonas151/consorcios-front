@@ -7,7 +7,16 @@ export const store = configureStore({
         auth: authReducer,
         cotas: cotasReducer,
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: false,
+        }),
+    devTools: true,
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export const initializeStore = () => store;
+
+export default { store, initializeStore };

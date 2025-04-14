@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { initializeStore } from "./store/store";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
+import "./index.css"
 
 const Loading = () => <div>Carregando aplicação...</div>;
 

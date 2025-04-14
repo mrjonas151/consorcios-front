@@ -15,10 +15,6 @@ const CotaDetails: React.FC<CotaDetailsProps> = ({ cota, fecharModal }) => {
     }).format(value);
   };
 
-  const formatCPF = (cpf: string) => {
-    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-  };
-
   return (
     <div className={styles.modal}>
       <div className={styles.modalContent}>
