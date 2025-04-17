@@ -5,7 +5,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from "react-toastify";
 
 const LazyAuth = lazy(() => {
-  console.log("Tentando carregar auth/App...");
   
   return import('auth/App')
     .catch(error => {
@@ -24,7 +23,6 @@ const LazyAuth = lazy(() => {
 });
 
 const LazyDashboard = lazy(() => {
-  console.log("Tentando carregar dashboard/Dashboard...");
   
   return import('dashboard/Dashboard')
     .catch(error => {
