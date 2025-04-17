@@ -13,6 +13,7 @@ export default defineConfig({
                 "./cotasSlice": "./src/redux/slices/cotasSlice.ts",
                 "./store": "./src/redux/store.ts",
                 "./types": "./src/types/index.ts",
+                "./apolloClient": "./src/api/client.ts",
             },
             shared: [
                 "react",
@@ -20,6 +21,7 @@ export default defineConfig({
                 "@reduxjs/toolkit",
                 "react-redux",
                 "react-toastify",
+                "@apollo/client",
             ],
         }),
     ],
