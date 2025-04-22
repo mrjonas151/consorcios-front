@@ -55,6 +55,15 @@ const GET_COTAS = gql`
             status
             grupoId
             clienteId
+            grupo {
+                id
+                nome
+            }
+            cliente {
+                id
+                nome
+                cpf
+            }
         }
     }
 `;
