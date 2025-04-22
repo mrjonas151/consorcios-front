@@ -47,10 +47,10 @@ const CotaDetails: React.FC<CotaDetailsProps> = ({ cota, fecharModal }) => {
                   {cota.status}
                 </span>
               </div>
-              {cota.nome && (
+              {cota.numeroCota && (
                 <div className={styles.infoItem}>
                   <span className={styles.label}>Nome:</span>
-                  <span className={styles.value}>{cota.nome}</span>
+                  <span className={styles.value}>{cota.numeroCota}</span>
                 </div>
               )}
             </div>

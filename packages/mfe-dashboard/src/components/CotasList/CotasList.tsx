@@ -32,7 +32,7 @@ const CotasList = ({ cotas, setEditando, deletarCota, verDetalhesCota }: CotasLi
     const termLower = searchTerm.toLowerCase().trim();
 
     return (
-      (cota.nome?.toLowerCase().includes(termLower)) ||
+      (cota.numeroCota?.toLowerCase().includes(termLower)) ||
       cota.numeroCota.toLowerCase().includes(termLower) ||
       formatCurrency(cota.valor).toLowerCase().includes(termLower) ||
       cota.status.toLowerCase().includes(termLower) ||

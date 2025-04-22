@@ -25,7 +25,6 @@ declare module "shared/types" {
     }
 
     export interface Cota {
-        nome: string;
         id: number;
         numeroCota: string;
         valor: number;
@@ -70,4 +69,33 @@ declare module "shared/authSlice" {
     export const logout: () => any;
     const authReducer: Reducer;
     export default authReducer;
+}
+
+declare module "shared/cotasSlice" {
+    import { Reducer } from "redux";
+    import { Cota } from "shared/types";
+
+    export function fetchCotas(): any;
+    export function fetchCotaById(id: string): any;
+    export function createCota(input: any): any;
+    export function updateCota(input: any): any;
+    export function removeCota(id: string): any;
+
+    export function selectCota(id: string | null): any;
+    export function addCotaLocal(cota: Cota): any;
+    export function updateCotaLocal(cota: Cota): any;
+    export function removeCotaLocal(id: string): any;
+
+    const cotasReducer: Reducer;
+    export default cotasReducer;
+}
+
+declare module "shared/apolloClient" {
+    import { ApolloClient, NormalizedCacheObject } from "@apollo/client";
+    export const client: ApolloClient<NormalizedCacheObject>;
+}
+
+declare module "shared/store" {
+    import { Store } from "@reduxjs/toolkit";
+    export const store: RootState;
 }

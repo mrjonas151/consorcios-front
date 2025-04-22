@@ -8,13 +8,13 @@ export interface Cota {
     valor: number;
     status: string;
     grupoId: string;
-    clienteId: string | null;
+    clienteId: string | number | null;
     grupo?: {
-        id: string;
+        id: string | number;
         nome: string;
     };
     cliente?: {
-        id: string;
+        id: string | number;
         nome: string;
         cpf: string;
     } | null;
@@ -24,8 +24,8 @@ interface CreateCotaInput {
     numeroCota: string;
     valor: number;
     status: string;
-    grupoId: number | string;
-    clienteId?: number | string | null;
+    grupoId: string;
+    clienteId: string | null;
 }
 
 interface UpdateCotaInput extends CreateCotaInput {
@@ -90,6 +90,10 @@ const CREATE_COTA = gql`
             status
             grupoId
             clienteId
+            grupo {
+                id
+                nome
+            }
         }
     }
 `;
@@ -154,14 +158,39 @@ export const createCota = createAsyncThunk<
     { rejectValue: string }
 >("cotas/createCota", async (input, { rejectWithValue }) => {
     try {
+        if (!input.numeroCota) {
+            return rejectWithValue("Número da cota é obrigatório");
+        }
+
+        const preparedInput = {
+            numeroCota: input.numeroCota,
+            valor: Number(input.valor || 0),
+            status: input.status || "DISPONIVEL",
+            grupoId: Number(input.grupoId || 0),
+            clienteId: input.clienteId ? Number(input.clienteId) : null,
+        };
+
         const { data } = await client.mutate({
             mutation: CREATE_COTA,
-            variables: { input },
+            variables: { input: preparedInput },
             refetchQueries: [{ query: GET_COTAS }],
         });
         return data.createCota;
     } catch (error: any) {
-        return rejectWithValue(error.message || "Erro ao criar nova cota");
+        console.error("Erro detalhado:", error);
+
+        if (error.graphQLErrors) {
+            for (const graphQLError of error.graphQLErrors) {
+                console.error("GraphQL error:", graphQLError);
+
+                const validationMessage = graphQLError.message || "";
+                if (validationMessage.includes("numeroCota")) {
+                    return rejectWithValue("Número da cota é obrigatório");
+                }
+            }
+        }
+
+        return rejectWithValue(error.message || "Erro ao criar cota");
     }
 });
 
