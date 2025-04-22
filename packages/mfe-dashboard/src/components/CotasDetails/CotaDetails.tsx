@@ -92,7 +92,7 @@ const CotaDetails: React.FC<CotaDetailsProps> = ({ cota, fecharModal }) => {
                 </div>
                 <div className={styles.infoItem}>
                   <span className={styles.label}>Email:</span>
-                  <span className={styles.value}>{cota.cliente.email}</span>
+                  <span className={styles.value}>{cota.cliente.email || "Não informado"}</span>
                 </div>
               </div>
             </div>

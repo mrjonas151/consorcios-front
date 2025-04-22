@@ -12,11 +12,13 @@ export interface Cota {
     grupo?: {
         id: string | number;
         nome: string;
+        administradoraId: string | number;
     };
     cliente?: {
         id: string | number;
         nome: string;
         cpf: string;
+        email: string;
     } | null;
 }
 
@@ -58,11 +60,13 @@ const GET_COTAS = gql`
             grupo {
                 id
                 nome
+                administradoraId
             }
             cliente {
                 id
                 nome
                 cpf
+                email
             }
         }
     }
@@ -79,12 +83,14 @@ const GET_COTA_BY_ID = gql`
             grupo {
                 id
                 nome
+                administradoraId
             }
             clienteId
             cliente {
                 id
                 nome
                 cpf
+                email
             }
         }
     }
