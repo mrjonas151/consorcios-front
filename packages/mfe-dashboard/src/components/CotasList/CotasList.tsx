@@ -1,7 +1,7 @@
 import styles from "./CotasList.module.css";
 import { Cota } from "shared/types";
 import { FaSearch } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface CotasListProps {
   cotas: Cota[];
@@ -12,6 +12,59 @@ interface CotasListProps {
 
 const CotasList = ({ cotas, setEditando, deletarCota, verDetalhesCota }: CotasListProps) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [processedCotas, setProcessedCotas] = useState<Cota[]>([]);
+  
+  useEffect(() => {
+    
+    const processed = cotas.map(cota => {
+      let grupo = cota.grupo;
+      if (!grupo || (typeof grupo === 'object' && !grupo.nome)) {
+        if (cota.grupoId) {
+          const matchingCota = cotas.find(c => 
+            c.grupoId === cota.grupoId && 
+            c.grupo && 
+            typeof c.grupo === 'object' && 
+            c.grupo.nome
+          );
+          
+          if (matchingCota && matchingCota.grupo) {
+            grupo = matchingCota.grupo;
+          } else {
+            grupo = { id: cota.grupoId, nome: `Grupo ${cota.grupoId}`, administradoraId: 0 };
+          }
+        }
+      }
+      
+      let cliente = cota.cliente;
+      if (!cliente && cota.clienteId) {
+        const matchingCota = cotas.find(c => 
+          c.clienteId === cota.clienteId && 
+          c.cliente && 
+          typeof c.cliente === 'object' && 
+          c.cliente.nome
+        );
+        
+        if (matchingCota && matchingCota.cliente) {
+          cliente = matchingCota.cliente;
+        } else if (cota.clienteId) {
+          cliente = { 
+            id: cota.clienteId, 
+            nome: `Cliente ${cota.clienteId}`, 
+            cpf: "Não disponível",
+            email: "email@naodisponivel.com"
+          };
+        }
+      }
+      
+      return {
+        ...cota,
+        grupo,
+        cliente
+      };
+    });
+    
+    setProcessedCotas(processed);
+  }, [cotas]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -21,28 +74,25 @@ const CotasList = ({ cotas, setEditando, deletarCota, verDetalhesCota }: CotasLi
   };
 
   const handleCotaClick = (cota: Cota) => {
-    if (verDetalhesCota) {
-      verDetalhesCota(cota);
-    }
+    verDetalhesCota(cota);
   };
 
-  const filteredCotas = cotas.filter(cota => {
+  const filteredCotas = processedCotas.filter(cota => {
     if (!searchTerm.trim()) return true;
     
     const termLower = searchTerm.toLowerCase().trim();
 
     return (
-      (cota.nome?.toLowerCase().includes(termLower)) ||
-      cota.numeroCota.toLowerCase().includes(termLower) ||
+      (cota.numeroCota?.toLowerCase().includes(termLower)) ||
       formatCurrency(cota.valor).toLowerCase().includes(termLower) ||
       cota.status.toLowerCase().includes(termLower) ||
-      (cota.grupo?.nome.toLowerCase().includes(termLower)) ||
-      (cota.cliente?.nome.toLowerCase().includes(termLower)) ||
-      (cota.cliente?.cpf.toLowerCase().includes(termLower))
+      (cota.grupo?.nome?.toLowerCase().includes(termLower)) ||
+      (cota.cliente?.nome?.toLowerCase().includes(termLower)) ||
+      (cota.cliente?.cpf?.toLowerCase().includes(termLower))
     );
   });
 
-return (
+  return (
     <div className={styles.listaCotas}>
       <div className={styles.listaCotasHeader}>
         <h2>Lista de Cotas</h2>

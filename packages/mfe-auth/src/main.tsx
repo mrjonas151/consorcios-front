@@ -10,11 +10,9 @@ const Loading = () => <div>Carregando...</div>;
 
 const bootstrap = async () => {
   try {
-    console.log("Tentando importar a store do shared...");
     
     try {
       const remoteModule = await import("shared/store");
-      console.log("Módulo remoto importado com sucesso:", remoteModule);
       
       const { store } = remoteModule;
       

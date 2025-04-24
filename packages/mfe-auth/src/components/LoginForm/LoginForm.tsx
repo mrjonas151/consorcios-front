@@ -3,13 +3,14 @@ import { FaUser, FaLock } from 'react-icons/fa';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginSuccess, setAuthLoading, setAuthError } from 'shared/authSlice';
+import { loginUser } from 'shared/authSlice';
 import 'react-toastify/dist/ReactToastify.css';
+import { unwrapResult } from '@reduxjs/toolkit';
 
 interface RootState {
   auth: {
     isAuthenticated: boolean;
-    user: { id: string; name: string; email: string } | null;
+    user: { id: string; username: string; email: string; role: string } | null;
     token: string | null;
     status: "idle" | "loading" | "failed";
     error: string | null;
@@ -29,28 +30,15 @@ const LoginForm = () => {
         e.preventDefault();
         
         try {
-            dispatch(setAuthLoading());
+            const resultAction = await dispatch(loginUser({ username, password }) as any);
             
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            const unwrappedResult = unwrapResult(resultAction);
             
-            if (username && password) {
-                const mockUser = {
-                    id: "1",
-                    name: username,
-                    email: `${username}@example.com`
-                };
-                const token = "mock-jwt-token-" + Math.random().toString(36).substring(2);
-                
-                dispatch(loginSuccess({ user: mockUser, token }));
-                toast.success('Login bem-sucedido! Redirecionando...');
-            } else {
-                dispatch(setAuthError('Usuário ou senha inválidos'));
-                toast.error('Usuário ou senha inválidos');
-            }
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Login falhou';
-            dispatch(setAuthError(errorMessage));
-            toast.error(`Login falhou: ${errorMessage}`);
+            toast.success(`Login bem-sucedido! Bem-vindo, ${unwrappedResult + "Olá"}!`);
+            
+        } catch (error: any) {
+            const errorMessage = error.message || 'Falha na autenticação';
+            toast.error(`Erro: ${errorMessage}`);
         }
     };
 
@@ -65,7 +53,7 @@ const LoginForm = () => {
                     <div className={styles.inputBox}>
                         <input
                             type="text"
-                            placeholder="Email/Username"
+                            placeholder="Username"
                             required
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}

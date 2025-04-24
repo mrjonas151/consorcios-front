@@ -28,9 +28,16 @@ declare module "shared/cotasSlice" {
 declare module "shared/authSlice" {
     import { PayloadAction } from "@reduxjs/toolkit";
 
+    export interface User {
+        id: string;
+        username: string;
+        email: string;
+        role?: string;
+    }
+
     export interface AuthState {
         isAuthenticated: boolean;
-        user: { id: string; name: string; email: string } | null;
+        user: User | null;
         token: string | null;
         status: "idle" | "loading" | "failed";
         error: string | null;
@@ -41,7 +48,13 @@ declare module "shared/authSlice" {
         token: string;
     }): PayloadAction<any>;
 
-    export function logout(): PayloadAction<any>;
+    export const loginUser: (credentials: {
+        username: string;
+        password: string;
+    }) => any;
+
+    export const logout: () => PayloadAction<void>;
+    export const checkAuthState: () => PayloadAction<void>;
     export function setAuthLoading(): PayloadAction<any>;
     export function setAuthError(error: string): PayloadAction<any>;
 

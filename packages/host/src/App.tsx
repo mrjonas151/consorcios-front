@@ -1,11 +1,11 @@
-import { lazy, Suspense } from 'react';
-import { useSelector } from 'react-redux';
+import { lazy, Suspense, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store/store';
+import {checkAuthState} from 'shared/authSlice';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from "react-toastify";
 
 const LazyAuth = lazy(() => {
-  console.log("Tentando carregar auth/App...");
   
   return import('auth/App')
     .catch(error => {
@@ -24,7 +24,6 @@ const LazyAuth = lazy(() => {
 });
 
 const LazyDashboard = lazy(() => {
-  console.log("Tentando carregar dashboard/Dashboard...");
   
   return import('dashboard/Dashboard')
     .catch(error => {
@@ -56,7 +55,12 @@ const Loading = () => (
 
 function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(checkAuthState());
+  }, [dispatch]);
+  
   return (
     <>
       <div style={{ 

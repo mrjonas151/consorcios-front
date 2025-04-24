@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
+import { ApolloProvider } from "@apollo/client";
 import { ToastContainer } from "react-toastify";
 import App from "./App";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,24 +10,25 @@ const Loading = () => <div>Carregando...</div>;
 
 const bootstrap = async () => {
   try {
-    console.log("Tentando importar a store do shared...");
-    
     try {
       const remoteModule = await import("shared/store");
-      console.log("Módulo remoto importado com sucesso:", remoteModule);
+      const apolloModule = await import("shared/apolloClient");
       
       const { store } = remoteModule;
+      const { client } = apolloModule;
       
-      if (!store) {
-        throw new Error("A store não foi encontrada no módulo importado");
+      if (!store || !client) {
+        throw new Error("Store ou Apollo Client não encontrado");
       }
 
       createRoot(document.getElementById("root")!).render(
         <Provider store={store}>
-          <Suspense fallback={<Loading />}>
-            <App />
-          </Suspense>
-          <ToastContainer />
+          <ApolloProvider client={client}>
+            <Suspense fallback={<Loading />}>
+              <App />
+            </Suspense>
+            <ToastContainer />
+          </ApolloProvider>
         </Provider>
       );
     } catch (importError) {

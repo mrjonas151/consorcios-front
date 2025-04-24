@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import styles from "./CotasForm.module.css";
 import { Cota, Grupo, Cliente } from "shared/types";
 import { IoMdClose } from "react-icons/io";
+import { gql } from "@apollo/client";
+import { client } from "shared/apolloClient";
+import { toast } from "react-toastify";
 
 interface CotasFormProps {
   adicionarCota: (cota: Cota) => void;
@@ -18,36 +21,65 @@ const STATUS_OPTIONS = [
   "CANCELADA"
 ];
 
+const GET_GRUPOS = gql`
+  query {
+    grupos {
+      id
+      nome
+      administradoraId
+    }
+  }
+`;
+
+const GET_CLIENTES = gql`
+  query {
+    clientes {
+      id
+      nome
+      cpf
+      email
+    }
+  }
+`;
+
 const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }: CotasFormProps) => {
-  const [cota, setCota] = useState<Omit<Cota, 'grupo'> & { grupo: Grupo }>(editando || { 
-    id: 0, 
-    nome: "", 
-    valor: 0,
-    numeroCota: "",
-    status: "",
-    grupoId: 0,
-    grupo: {id: 0, nome: "", administradoraId: 0}
-  });
-
-  const gruposIniciais: Grupo[] = [
-    { id: 1, nome: "Grupo 1", administradoraId: 1 },
-    { id: 2, nome: "Grupo 2", administradoraId: 1 },
-    { id: 3, nome: "Grupo 3", administradoraId: 2 }
-  ];
-
-  const clientesIniciais: Cliente[] = [
-    { id: 1, nome: "Cliente 1", cpf: "123.456.789-00", email: "cliente1@exemplo.com" },
-    { id: 2, nome: "Cliente 2", cpf: "987.654.321-00", email: "cliente2@exemplo.com" },
-    { id: 3, nome: "Cliente 3", cpf: "111.222.333-44", email: "cliente3@exemplo.com" },
-    { id: 4, nome: "Cliente 4", cpf: "555.666.777-88", email: "teste@gmail.com" }
-  ];
-
-  const [grupos] = useState<Grupo[]>(gruposIniciais);
-  
-  const [clientes] = useState<Cliente[]>(clientesIniciais);
+  const [cota, setCota] = useState<Omit<Cota, 'grupo'> & { grupo: Grupo }>(editando);
+  const [grupos, setGrupos] = useState<Grupo[]>([]);
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (editando) {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const gruposResult = await client.query({
+          query: GET_GRUPOS,
+          fetchPolicy: "network-only"
+        });
+        
+        const clientesResult = await client.query({
+          query: GET_CLIENTES,
+          fetchPolicy: "network-only"
+        });
+
+        setGrupos(gruposResult.data?.grupos || []);
+        setClientes(clientesResult.data?.clientes || []);
+        
+      } catch (err: any) {
+        setError(err.message || "Erro ao carregar dados");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (editando && editando.id !== 0) {
       setCota(editando);
     }
   }, [editando]);
@@ -56,7 +88,7 @@ const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }: CotasFo
     const { name, value } = e.target;
     setCota(prev => ({
       ...prev,
-      [name]: name === 'valor' ? Number(value) : value
+      [name]: name === 'valor' ? parseFloat(value) : value
     }));
   };
 
@@ -64,8 +96,8 @@ const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }: CotasFo
     const { name, value } = e.target;
     
     if (name === "grupoId") {
-      const grupoId = parseInt(value);
-      const grupo = grupos.find(g => g.id === grupoId) || { id: 0, nome: "", administradoraId: 0 };
+      const grupoId = parseInt(value, 10);
+      const grupo = grupos.find(g => g.id.toString() === value) || { id: 0, nome: "", administradoraId: 0 };
       setCota(prev => ({
         ...prev,
         grupoId,
@@ -79,12 +111,12 @@ const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }: CotasFo
           cliente: undefined
         }));
       } else {
-        const clienteId = parseInt(value);
-        const cliente = clientes.find(c => c.id === clienteId);
+        const clienteId = parseInt(value, 10);
+        const cliente = clientes.find(c => c.id.toString() === value);
         setCota(prev => ({
           ...prev,
           clienteId,
-          cliente: cliente || undefined
+          cliente
         }));
       }
     } else if (name === "status") {
@@ -97,24 +129,102 @@ const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }: CotasFo
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (editando.id !== 0) {
-      editarCota(cota);
-    } else {
-      adicionarCota(cota);
+    
+    try {
+      if (!cota.numeroCota || cota.numeroCota.trim() === "") {
+        toast.error("Número da cota é obrigatório");
+        return;
+      }
+      
+      if (!cota.valor || isNaN(Number(cota.valor)) || Number(cota.valor) <= 0) {
+        toast.error("Valor da cota deve ser maior que zero");
+        return;
+      }
+      
+      if (!cota.status) {
+        toast.error("Status é obrigatório");
+        return;
+      }
+      
+      if (!cota.grupoId) {
+        toast.error("Grupo é obrigatório");
+        return;
+      }
+      
+      const cotaInput = {
+        numeroCota: cota.numeroCota.trim(), 
+        valor: Number(cota.valor),
+        status: cota.status,
+        grupoId: Number(cota.grupoId),
+        clienteId: cota.clienteId ? Number(cota.clienteId) : undefined
+      };
+            
+      if (editando.id !== 0) {
+        editarCota({
+          ...cota,
+          ...cotaInput
+        });
+      } else {
+        adicionarCota({
+          ...cota,
+          ...cotaInput
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao submeter formulário:", error);
+      toast.error("Erro ao processar formulário");
     }
-    
-    setCota({ 
-      id: 0, 
-      nome: "", 
-      valor: 0,
-      numeroCota: "",
-      status: "",
-      grupoId: 0,
-      grupo: {id: 0, nome: "", administradoraId: 0}
-    });
-    
-    fecharModal();
   };
+
+  if (isLoading) {
+    return (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modalContent}>
+          <div className={styles.modalHeader}>
+            <h2>Carregando dados...</h2>
+            <button className={styles.closeButton} onClick={fecharModal}>
+              <IoMdClose size={24} />
+            </button>
+          </div>
+          <div style={{ padding: '20px', textAlign: 'center' }}>
+            <p>Carregando grupos e clientes...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modalContent}>
+          <div className={styles.modalHeader}>
+            <h2>Erro</h2>
+            <button className={styles.closeButton} onClick={fecharModal}>
+              <IoMdClose size={24} />
+            </button>
+          </div>
+          <div style={{ padding: '20px', textAlign: 'center', color: 'red' }}>
+            <p>{error}</p>
+            <button 
+              onClick={fecharModal}
+              style={{ 
+                marginTop: '15px', 
+                padding: '8px 16px',
+                backgroundColor: '#e74c3c',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.modalOverlay}>
@@ -126,20 +236,7 @@ const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }: CotasFo
           </button>
         </div>
         
-        <form onSubmit={handleSubmit}>
-          <div className={styles.formGroup}>
-            <label htmlFor="nome">Nome da Cota:</label>
-            <input 
-              type="text" 
-              id="nome"
-              name="nome" 
-              value={cota.nome} 
-              onChange={handleInputChange} 
-              placeholder="Digite o nome da cota"
-              required 
-            />
-          </div>
-
+        <form onSubmit={handleSubmit}>          
           <div className={styles.formGroup}>
             <label htmlFor="numeroCota">Número da Cota:</label>
             <input 
@@ -148,7 +245,7 @@ const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }: CotasFo
               name="numeroCota" 
               value={cota.numeroCota} 
               onChange={handleInputChange} 
-              placeholder="Ex: 001, 002, etc."
+              placeholder="Ex: 001-B, 002, etc."
               required 
             />
           </div>
@@ -191,13 +288,13 @@ const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }: CotasFo
             <select
               id="grupoId"
               name="grupoId"
-              value={cota.grupoId || ""}
+              value={cota.grupoId?.toString() || ''}
               onChange={handleSelectChange}
               required
             >
               <option value="" disabled>Selecione um grupo</option>
               {grupos.map(grupo => (
-                <option key={grupo.id} value={grupo.id}>
+                <option key={grupo.id.toString()} value={grupo.id.toString()}>
                   {grupo.nome}
                 </option>
               ))}
@@ -209,12 +306,12 @@ const CotasForm = ({ adicionarCota, editarCota, editando, fecharModal }: CotasFo
             <select
               id="clienteId"
               name="clienteId"
-              value={cota.clienteId || 0}
+              value={cota.clienteId?.toString() || '0'}
               onChange={handleSelectChange}
             >
-              <option value={0}>Nenhum</option>
+              <option value="0">Nenhum</option>
               {clientes.map(cliente => (
-                <option key={cliente.id} value={cliente.id}>
+                <option key={cliente.id.toString()} value={cliente.id.toString()}>
                   {cliente.nome} - {cliente.cpf}
                 </option>
               ))}
