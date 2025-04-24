@@ -52,7 +52,7 @@ O sistema é dividido da seguinte forma:
 
 ```bash
 1. Clone o repositório
-git clone https://github.com/seu-usuario/consorcio-frontend.git
+git clone https://github.com/jonas-frontend/consorcio-frontend.git
 cd consorcio-frontend
 
 2. Instale as dependências
@@ -60,7 +60,7 @@ npm install
 
 3. Configure o ambiente
 Crie um arquivo .env na raiz do projeto com o seguinte conteúdo:
-VITE_API_URL=http://seu-bff-url/graphql
+VITE_API_URL=http://bffurl/graphql
 
 4. Inicie a aplicação (host e microfrontends)
 npm run dev
