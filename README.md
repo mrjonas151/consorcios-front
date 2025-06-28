@@ -52,7 +52,7 @@ O sistema é dividido da seguinte forma:
 
 ```bash
 1. Clone o repositório
-git clone https://github.com/jonas-frontend/consorcio-frontend.git
+git clone https://github.com/mrjonas151/consorcios-front.git
 cd consorcio-frontend
 
 2. Instale as dependências
